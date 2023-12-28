@@ -9,7 +9,6 @@
 | MySql | 
 | JavaScript | 
 | Docker | 
-| JavaScript | 
 | SOAP | 
 | Tomcat |
 

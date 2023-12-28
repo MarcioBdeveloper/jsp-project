@@ -64,8 +64,7 @@ public class ContactController extends HttpServlet {
 		} else if (action.equals("/delete")) {
 			deleteContact(request, response);
 		} else if (action.equals("/cep")) {
-//			getCEP(request, response);
-			getCEPHTML(request, response);
+			getCEP(request, response);
 		} else {
 			response.sendRedirect("index.html");
 		}
@@ -175,41 +174,14 @@ public class ContactController extends HttpServlet {
 	 */
 	protected void getCEP(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String adressResponse = "";
 		try {
 			String cep = request.getParameter("zipCode");
-			EnderecoERP endereco = soapCorreios.consultaCEP(cep);
-			request.setAttribute("adress", endereco.getEnd());
-			request.setAttribute("zipCode", endereco.getCep());
-		} catch (SQLException_Exception e) {
-			e.printStackTrace();
-		} catch (SigepClienteException e) {
-			e.printStackTrace();
-		}
-		
-		RequestDispatcher rd = request.getRequestDispatcher("new.html");
-		rd.forward(request, response);
-	}
-	
-	/**
-	 * Get CEP.
-	 *
-	 * @param request the request
-	 * @param response the response
-	 * @throws ServletException the servlet exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws SigepClienteException 
-	 * @throws SQLException_Exception 
-	 */
-	protected void getCEPHTML(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String enderecoResposta = "";
-		try {
-			String cep = request.getParameter("zipCode");
-			EnderecoERP endereco = soapCorreios.consultaCEP(cep);
+			EnderecoERP adress = soapCorreios.consultaCEP(cep);
 			
-			enderecoResposta = endereco.getEnd() + ", " +					
-				     endereco.getBairro() + ", " +
-				     endereco.getCidade() + "-" + endereco.getUf();
+			adressResponse = adress.getEnd() + ", " +					
+				     adress.getBairro() + ", " +
+				     adress.getCidade() + "-" + adress.getUf();
 
 		} catch (SQLException_Exception e) {
 			e.printStackTrace();
@@ -218,9 +190,6 @@ public class ContactController extends HttpServlet {
 		}
 		
 		response.setContentType("text/plain");
-        
-        // Enviar o endereço como resposta
-        response.getWriter().write(enderecoResposta);
-
+        response.getWriter().write(adressResponse);
 	}
 }
